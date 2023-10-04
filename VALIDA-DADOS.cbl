@@ -14,7 +14,7 @@
            03 WS-EMAIL            PIC X(30).
            03 WS-NAME             PIC X(30).
            03 WS-PASSWORD         PIC X(11).
-           03 WS-PHONE            PIC 9(13).
+           03 WS-PHONE            PIC 9(12).
 
            03 WS-COUNT            PIC 9(02).
            03 WS-DOMINIO          PIC X(20).
@@ -211,9 +211,12 @@
             MOVE WS-PHONE(2:1)  TO  WS-AUX
             DISPLAY 'VALOR AUX: ' WS-AUX
 
-            IF (WS-COUNT < 11 OR WS-COUNT > 12) OR WS-AUX = 0
+            IF WS-COUNT < 11 OR WS-COUNT > 12 OR WS-AUX = 0
                 DISPLAY
                 'Telefone deve ter minimo de 11 e maximo 12 caracteres'
+
+                DISPLAY 'COUNT IF: ' WS-COUNT
+                DISPLAY 'TELEFONE IF: ' WS-PHONE
                  PERFORM P000-ERRO
             END-IF
 

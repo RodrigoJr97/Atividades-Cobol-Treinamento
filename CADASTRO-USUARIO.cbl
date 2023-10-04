@@ -13,7 +13,7 @@
            03 WS-EMAIL            PIC X(30).
            03 WS-NAME             PIC X(30).
            03 WS-PASSWORD         PIC X(11).
-           03 WS-PHONE            PIC 9(13).
+           03 WS-PHONE            PIC 9(12).
 
            03 WS-COUNT            PIC 9(02).
            03 WS-DOMINIO          PIC X(20).
@@ -42,7 +42,7 @@
             MOVE 'teste@capgemini.com'       TO WS-EMAIL.
             MOVE 'Bruce Waynne'              TO WS-NAME.
             MOVE '12345@Ab'                  TO WS-PASSWORD.
-            MOVE 11912341234                 TO WS-PHONE.
+            MOVE 32912341234                 TO WS-PHONE.
 
             CALL 'VALIDA-DADOS' USING  WS-USUARIO.
             IF STATUS-VALIDACAO = 0
