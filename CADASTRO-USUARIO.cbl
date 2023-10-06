@@ -9,11 +9,15 @@
        DATA DIVISION.
        FILE SECTION.
        WORKING-STORAGE SECTION.
+       01 WS-IOF                  PIC X(1)  VALUE SPACE.
+
+       01 ID-GERADOR              PIC 9(04) VALUE 1.
        01 WS-USUARIO.
            03 WS-EMAIL            PIC X(30).
            03 WS-NAME             PIC X(30).
            03 WS-PASSWORD         PIC X(11).
            03 WS-PHONE            PIC 9(12).
+           03 WS-ID               PIC 9(04).
 
            03 WS-COUNT            PIC 9(02).
            03 WS-DOMINIO          PIC X(20).
@@ -39,16 +43,27 @@
 
             INITIALISE WS-USUARIO.
 
-            MOVE 'teste@capgemini.com'       TO WS-EMAIL.
-            MOVE 'Bruce Waynne'              TO WS-NAME.
-            MOVE '12345@Ab'                  TO WS-PASSWORD.
-            MOVE 32912341234                 TO WS-PHONE.
+              MOVE 'I' TO WS-IOF
 
-            CALL 'VALIDA-DADOS' USING  WS-USUARIO.
-            IF STATUS-VALIDACAO = 0
+              PERFORM UNTIL WS-IOF = 'N' OR WS-IOF = 'n'
+
+               MOVE ID-GERADOR TO WS-ID
+               ADD 1 TO ID-GERADOR
+
+               MOVE 'teste@capgemini.com'       TO WS-EMAIL
+               MOVE 'Bruce Waynne'              TO WS-NAME
+               MOVE '12345@Ab'                  TO WS-PASSWORD
+               MOVE 32912341234                 TO WS-PHONE
+
+              CALL 'VALIDA-DADOS' USING  WS-USUARIO
+              IF STATUS-VALIDACAO = 0
                 CALL 'GERAR-ARQUIVO' USING  WS-USUARIO
-            END-IF
+              END-IF
 
+              DISPLAY 'Deseja cadastrar outro usuario? (s/n)'
+              ACCEPT WS-IOF
+
+              END-PERFORM
 
 
             STOP RUN.

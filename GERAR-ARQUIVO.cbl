@@ -13,18 +13,22 @@
 
            SELECT ARQ-USUARIO ASSIGN TO
               'C:\Cobol\Atividade\bin\ARQ-USUARIO.CSV'
-               ORGANIZATION IS LINE SEQUENTIAL.
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-ARQ-USUARIO.
 
        DATA DIVISION.
        FILE SECTION.
 
        FD ARQ-USUARIO.
-       01 REG-ARQ-USUARIO             PIC X(87).
+       01 REG-ARQ-USUARIO             PIC X(119).
 
        WORKING-STORAGE SECTION.
-       77 WS-IOF                  PIC X(1)  VALUE SPACE.
+       01 ARQUIVO-EXISTE          PIC X(1) VALUE 'N'.
+       01 FILE-STATUS             PIC X(2).
 
        01 WS-ARQ-USUARIO.
+           03 WS-ID               PIC 9(04).
+           03 FILLER              PIC X VALUE ';'.
            03 WS-EMAIL            PIC X(30).
            03 FILLER              PIC X VALUE ';'.
            03 WS-NAME             PIC X(30).
@@ -40,30 +44,41 @@
            03 WS-NAME-RECEBIDO             PIC X(30).
            03 WS-PASSWORD-RECEBIDO         PIC X(11).
            03 WS-PHONE-RECEBIDO            PIC 9(12).
-
+           03 ID-USUARIO-RECEBIDO          PIC 9(04).
 
        PROCEDURE DIVISION USING WS-USUARIO-RECEBIDO.
        MAIN-PROCEDURE.
 
-            OPEN OUTPUT ARQ-USUARIO.
+             OPEN INPUT ARQ-USUARIO
+             IF FILE-STATUS = '00'
+               MOVE 'S' TO ARQUIVO-EXISTE
+             END-IF
+             CLOSE ARQ-USUARIO
 
-            MOVE 'I' TO WS-IOF
+             IF ARQUIVO-EXISTE = 'S'
+              OPEN EXTEND ARQ-USUARIO
+              MOVE 0 TO ID-USUARIO-RECEBIDO
+              READ ARQ-USUARIO
+                AT END
+                   CONTINUE
+                NOT AT END
+                   MOVE ID-USUARIO-RECEBIDO TO WS-ID
+                END-READ
+             ELSE
+              OPEN OUTPUT ARQ-USUARIO
+              MOVE 1 TO ID-USUARIO-RECEBIDO
+            END-IF
 
-            PERFORM UNTIL WS-IOF = 'F' OR WS-IOF = 'f'
 
+              MOVE ID-USUARIO-RECEBIDO    TO   WS-ID
               MOVE WS-EMAIL-RECEBIDO      TO   WS-EMAIL
               MOVE WS-NAME-RECEBIDO       TO   WS-NAME
               MOVE WS-PASSWORD-RECEBIDO   TO   WS-PASSWORD
               MOVE WS-PHONE-RECEBIDO      TO   WS-PHONE
 
               MOVE WS-ARQ-USUARIO  TO  REG-ARQ-USUARIO
-
               WRITE REG-ARQ-USUARIO
 
-              DISPLAY 'Tecle F ou f para finalizar execucao.'
-              ACCEPT WS-IOF
-
-            END-PERFORM
 
             CLOSE ARQ-USUARIO
 

@@ -15,6 +15,7 @@
            03 WS-NAME             PIC X(30).
            03 WS-PASSWORD         PIC X(11).
            03 WS-PHONE            PIC 9(12).
+           03 WS-ID               PIC 9(04).
 
            03 WS-COUNT            PIC 9(02).
            03 WS-DOMINIO          PIC X(20).
